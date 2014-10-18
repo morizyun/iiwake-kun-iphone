@@ -10,6 +10,13 @@
 
 @interface ViewController : UIViewController
 
+@property IBOutlet UILabel *currentLatitude;
+@property IBOutlet UILabel *currentLongitude;
+@property IBOutlet UILabel *companyLatitude;
+@property IBOutlet UILabel *companyLongitude;
+@property IBOutlet UILabel *distance;
+@property IBOutlet UILabel *notification;
+@property IBOutlet UILabel *notifySettings;
 
 @end
 
