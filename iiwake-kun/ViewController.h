@@ -18,5 +18,8 @@
 @property IBOutlet UILabel *notification;
 @property IBOutlet UILabel *notifySettings;
 
+// ボタン
+@property IBOutlet UIButton *sendButton;
+
 @end
 

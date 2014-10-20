@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>FC4CD92D-252D-4C9A-BD06-E7F8ABD39BB1</string>
+	<key>IDESourceControlProjectName</key>
+	<string>iiwake-kun</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>B8A8C68E08FD335EBE44A740731BF114DE162BDA</key>
+		<string>github.com:morizyun/iiwake-kun-iphone.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>iiwake-kun.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>B8A8C68E08FD335EBE44A740731BF114DE162BDA</key>
+		<string>..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>github.com:morizyun/iiwake-kun-iphone.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>B8A8C68E08FD335EBE44A740731BF114DE162BDA</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>B8A8C68E08FD335EBE44A740731BF114DE162BDA</string>
+			<key>IDESourceControlWCCName</key>
+			<string>iiwake-kun-iphone</string>
+		</dict>
+	</array>
+</dict>
+</plist>

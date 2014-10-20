@@ -13,9 +13,11 @@
 const float M3_LATITUDE = 35.668955;
 const float M3_LONGITUDE = 139.7425;
 const float STOP_DISTANCE = 1000.0;
-const NSString *TWITTER_USER = @"morizyun";
-const NSString *STOP_MAIL_API_URL = @"http://respondto.it/morizyun.json";
+const int ACCOUNT_ID = 1;
+const NSString *STOP_MAIL_API_URL = @"/api/skip?accountId=";
 const NSString *STOP_NOTIFICATION = @"( ・∀・)ｲｲ!!わけメールを停止しました！";
+const NSString *SEND_MAIL_API_URL = @"/api/send?accountId=";
+const NSString *SEND_NOTIFICATION = @"( ・∀・)ｲｲ!!わけメールを送信しました！";
 
 @interface ViewController ()<CLLocationManagerDelegate> {
     // 会社の緯度経度
@@ -33,16 +35,31 @@ const NSString *STOP_NOTIFICATION = @"( ・∀・)ｲｲ!!わけメールを停�
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    // 位置情報系の初期化
     [self initializeLocationManager];
-    [self intiializeConstants];
+    
+    // 定数の初期化
+    [self initializeConstants];
+
+    // 表示系の初期化
+    [self initializeView];
     
     // デフォルトの通知センターを取得する
     NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
     
-    [nc addObserver:self selector:@selector(postStopMail) name:@"postStopMail" object:nil];
+    [nc addObserver:self selector:@selector(sendMail) name:@"sendMail" object:nil];
+    [nc addObserver:self selector:@selector(stopMail) name:@"stopMail" object:nil];
 }
 
--(void)intiializeConstants
+// Viewの初期化
+-(void)initializeView
+{
+    // ボタンをクリックした場合の処理の追加
+    [_sendButton addTarget:self action:@selector(tapButton:) forControlEvents:UIControlEventTouchUpInside];
+}
+
+// 定数の初期化
+-(void)initializeConstants
 {
     // 会社の緯度経度は、M3の緯度経度を決め打ち
     fco_lat = M3_LATITUDE;
@@ -57,6 +74,7 @@ const NSString *STOP_NOTIFICATION = @"( ・∀・)ｲｲ!!わけメールを停�
     alreadySend = NO;
 }
 
+// 位置情報系の初期化
 -(void)initializeLocationManager
 {
     // ロケーションマネージャ生成
@@ -83,6 +101,19 @@ const NSString *STOP_NOTIFICATION = @"( ・∀・)ｲｲ!!わけメールを停�
     }
 }
 
+// ボタンをタップした場合の処理
+-(void)tapButton:(id)sender
+{
+    // メールの停止を通知センターから依頼
+    NSNotification *n = [NSNotification notificationWithName:@"sendMail" object:self];
+    [[NSNotificationCenter defaultCenter] postNotification:n];
+    
+    // 停止したことを画面で表示
+    _notification.text = [NSString stringWithFormat:@"%@", SEND_NOTIFICATION];
+    
+    // ロケーションマネージャ停止
+    [_locationManager stopUpdatingLocation];
+}
 
 // 位置取得成功時
 - (void)locationManager:(CLLocationManager *)manager
@@ -110,7 +141,7 @@ const NSString *STOP_NOTIFICATION = @"( ・∀・)ｲｲ!!わけメールを停�
     // STOP_DISTANCE メートル 以内に到着したらメールの停止を依頼する
     if (dist < STOP_DISTANCE) {
         // メールの停止を通知センターから依頼
-        NSNotification *n = [NSNotification notificationWithName:@"postStopMail" object:self];
+        NSNotification *n = [NSNotification notificationWithName:@"stopMail" object:self];
         [[NSNotificationCenter defaultCenter] postNotification:n];
         
         // 停止したことを画面で表示
@@ -122,8 +153,10 @@ const NSString *STOP_NOTIFICATION = @"( ・∀・)ｲｲ!!わけメールを停�
 }
 
 // メール停止をサーバーに依頼
-- (void)postStopMail
+- (void)stopMail
 {
+    NSLog(@"Called stopMail");
+    
     if (alreadySend) {
         return;
     } else {
@@ -133,15 +166,40 @@ const NSString *STOP_NOTIFICATION = @"( ・∀・)ｲｲ!!わけメールを停�
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     [[manager securityPolicy] setAllowInvalidCertificates:YES];
     
-    NSString *stopMailUrl = [NSString stringWithFormat:@"%@", STOP_MAIL_API_URL];
-    NSDictionary *params = @{@"twitter_user": TWITTER_USER};
+    NSString *stopMailUrl = [NSString stringWithFormat:@"%@%d", STOP_MAIL_API_URL,ACCOUNT_ID];
     
-    [manager POST:stopMailUrl parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        NSLog(@"JSON: %@", responseObject);
+    [manager GET:stopMailUrl parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject){
+        NSLog(@"stopMail JSON: %@", responseObject);
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        NSLog(@"Error: %@", error);
+        NSLog(@"stopMail Error: %@", error);
     }];
 }
+
+// メール送信をサーバーに依頼
+- (void)sendMail
+{
+    NSLog(@"Called sendMail");
+    
+    if (alreadySend) {
+        return;
+    } else {
+        alreadySend = YES;
+    }
+    
+    NSLog(@"Called sendMail");
+    
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    [[manager securityPolicy] setAllowInvalidCertificates:YES];
+    
+    NSString *sendMailUrl = [NSString stringWithFormat:@"%@%d", SEND_MAIL_API_URL,ACCOUNT_ID];
+    
+    [manager GET:sendMailUrl parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject){
+        NSLog(@"sendMail JSON: %@", responseObject);
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"sendMail Error: %@", error);
+    }];
+}
+
 
 // 位置情報が取得失敗した場合にコール
 - (void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error
